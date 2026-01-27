@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/item_management}
-    username: ${DATABASE_USERNAME:postgres}
-    password: ${DATABASE_PASSWORD:postgres}
+    url: jdbc:postgresql://your-supabase-host:6543/postgres?sslmode=require
+    username: your-username
+    password: your-password
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 5
