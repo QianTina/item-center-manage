@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: item-management-system
+    env: java
+    region: oregon
+    plan: free
+    buildCommand: ./mvnw clean package -DskipTests
+    startCommand: java -Xmx512m -Xms256m -Dspring.profiles.active=prod -jar target/item-center-0.0.1-SNAPSHOT.jar
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: DATABASE_URL
+        value: jdbc:postgresql://aws-1-ap-southeast-1.pooler.supabase.com:5432/postgres?sslmode=require&user=postgres.jchsrvxxcbcilqgqtpkh&password=item-manage-center202601
+      - key: JAVA_OPTS
+        value: -Xmx512m -Xms256m -XX:+UseG1GC -XX:MaxGCPauseMillis=100
