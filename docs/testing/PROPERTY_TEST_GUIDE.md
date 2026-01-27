@@ -16,6 +16,45 @@
   - 测试策略：创建多个场景（2-20个），验证所有场景的 ID 都是唯一的且不为 null
   - 迭代次数：100 次
 
+## 已实现的单元测试
+
+### Task 5.5: 场景管理的单元测试
+
+**文件**: `src/test/java/org/tina/itemcenter/SceneManagementTest.java`
+
+**测试内容**:
+1. **testCreateScene_Success** - 测试创建场景成功
+   - 验证需求：1.1, 1.2
+   - 验证场景 ID、名称、所有者、时间戳正确设置
+
+2. **testGetAllScenes** - 测试查询场景列表
+   - 验证需求：1.4
+   - 创建多个场景并验证查询结果
+
+3. **testGetSceneById_Success** - 测试根据 ID 查询场景
+   - 验证需求：1.4
+   - 验证查询结果与创建的场景匹配
+
+4. **testGetSceneById_NotFound** - 测试查询不存在的场景
+   - 验证需求：1.4
+   - 验证抛出 EntityNotFoundException
+
+5. **testCreateScene_MissingName_ShouldFail** - 测试缺少场景名称时创建失败
+   - 验证需求：1.2
+   - 验证必填字段校验
+
+6. **testCreateScene_MissingOwner_ShouldFail** - 测试缺少所有者时创建失败
+   - 验证需求：1.2
+   - 验证必填字段校验
+
+7. **testCreateScene_EmptyName_ShouldFail** - 测试空字符串名称时创建失败
+   - 验证需求：1.2
+   - 验证字段非空校验
+
+8. **testCreateScene_TimestampsSet** - 测试时间戳正确设置
+   - 验证需求：1.1
+   - 验证创建时间和更新时间正确设置
+
 ## 如何运行属性测试
 
 ### 方法 1：使用 Maven 命令行
