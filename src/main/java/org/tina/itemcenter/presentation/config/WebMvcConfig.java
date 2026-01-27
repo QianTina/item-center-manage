@@ -21,10 +21,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
     /**
      * 注册拦截器
      * SceneInterceptor 拦截所有请求，提取场景 ID
+     * 排除场景管理接口，因为场景本身就是数据隔离的基础
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(sceneInterceptor)
-                .addPathPatterns("/api/**"); // 只拦截 API 请求
+                .addPathPatterns("/api/**") // 拦截所有 API 请求
+                .excludePathPatterns("/api/scenes/**"); // 排除场景管理接口
     }
 }
