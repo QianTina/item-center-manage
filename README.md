@@ -1,205 +1,195 @@
-# 物品管理系统
+# 物品管理系统 (Item Management System)
 
-一个基于 Spring Boot 4.0.1 + PostgreSQL (Supabase) 的物品追踪与查找系统。
+一个基于 Spring Boot 4.0.1 + JPA + PostgreSQL 的物品追踪与查找系统。
 
-## 快速开始
+## 🚀 快速开始
 
-### 1. 环境要求
+### 环境要求
 
 - Java 17+
-- Maven 3.6+
-- PostgreSQL 数据库（推荐使用 Supabase）
+- PostgreSQL (使用 Supabase 免费层)
+- Maven 3.9+
 
-### 2. 配置数据库
+### 本地开发
 
-#### 方式一：使用环境变量（推荐）
-
-1. 复制环境变量模板：
+1. **克隆项目**
 ```bash
+git clone https://github.com/QianTina/item-center-manage.git
+cd item-center-manage/item-center
+```
+
+2. **配置数据库**
+```bash
+# 复制环境变量模板
 cp .env.example .env
+
+# 编辑 .env 文件，填入你的 Supabase 数据库配置
+# DATABASE_URL=jdbc:postgresql://your-host:6543/postgres?sslmode=require
+# DATABASE_USERNAME=your-username
+# DATABASE_PASSWORD=your-password
 ```
 
-2. 编辑 `.env` 文件，填入你的数据库配置：
-```properties
-DATABASE_URL=jdbc:postgresql://your-host:6543/postgres?sslmode=require
-DATABASE_USERNAME=your-username
-DATABASE_PASSWORD=your-password
-```
-
-3. 加载环境变量并启动：
+3. **运行应用**
 ```bash
-# macOS/Linux
+# 加载环境变量并启动
 export $(cat .env | xargs) && ./mvnw spring-boot:run
-
-# 或者使用 source
-source .env
-./mvnw spring-boot:run
 ```
 
-#### 方式二：使用配置文件
-
-1. 复制配置模板：
+4. **测试 API**
 ```bash
-cp src/main/resources/application-local.yml.example src/main/resources/application-local.yml
+# 应用运行在 http://localhost:8080
+curl http://localhost:8080/api/scenes
 ```
 
-2. 编辑 `application-local.yml`，填入你的数据库配置
+## 📚 文档导航
 
-3. 启动应用：
-```bash
-./mvnw spring-boot:run
-```
+### 快速开始
 
-### 3. 运行测试
+- **[快速参考](QUICK_REFERENCE.md)** - 常用命令和快速链接
+- **[更新日志](CHANGELOG.md)** - 项目变更记录
 
-```bash
-# 设置环境变量
-export DATABASE_URL="jdbc:postgresql://..."
-export DATABASE_USERNAME="..."
-export DATABASE_PASSWORD="..."
+### 核心文档
 
-# 运行所有测试
-./mvnw test
+- **[项目架构](docs/architecture.md)** - 系统架构设计和技术选型
+- **[代码约束](docs/CODE_CONSTRAINTS_ZH.md)** - 编码规范和约束
 
-# 运行特定测试
-./mvnw test -Dtest=DatabaseConnectionTest
-```
+### 开发文档
 
-### 4. 访问应用
+- **[API 测试指南](docs/development/API_TEST.md)** - API 端点测试示例
 
-应用启动后，访问：
-- API 地址：http://localhost:8080
-- 健康检查：http://localhost:8080/actuator/health（如果启用）
+### 测试文档
 
-## API 文档
+- **[属性测试指南](docs/testing/PROPERTY_TEST_GUIDE.md)** - 基于属性的测试说明
 
-详细的 API 测试说明请参考：[API_TEST.md](API_TEST.md)
+### 部署文档
 
-### 场景管理 API
+- **[Supabase 连接指南](docs/deployment/SUPABASE-CONNECTION-GUIDE.md)** - 数据库配置说明
+- **[部署指南](docs/deployment/README-DEPLOY.md)** - Render 部署配置
 
-```bash
-# 创建场景
-curl -X POST http://localhost:8080/api/scenes \
-  -H "Content-Type: application/json" \
-  -d '{"name": "我的家", "owner": "张三"}'
+### 安全文档
 
-# 查询所有场景
-curl -X GET http://localhost:8080/api/scenes
+- **[安全配置指南](docs/security/SECURITY_CONFIG.md)** - 环境变量和密码管理
+- **[敏感数据清理脚本](docs/security/cleanup-sensitive-data.sh)** - Git 历史清理工具
+- **[仓库重置脚本](docs/security/reset-repo.sh)** - 简单的仓库重置工具
 
-# 根据 ID 查询场景
-curl -X GET http://localhost:8080/api/scenes/1
-```
-
-## 项目结构
+## 🏗️ 项目结构
 
 ```
 item-center/
+├── docs/                          # 文档目录
+│   ├── architecture.md            # 架构文档
+│   ├── CODE_CONSTRAINTS_ZH.md     # 代码约束
+│   ├── deployment/                # 部署相关文档
+│   ├── development/               # 开发相关文档
+│   ├── testing/                   # 测试相关文档
+│   └── security/                  # 安全相关文档
 ├── src/
 │   ├── main/
 │   │   ├── java/org/tina/itemcenter/
-│   │   │   ├── application/        # 应用服务层
-│   │   │   │   └── service/
-│   │   │   ├── common/             # 公共组件
-│   │   │   │   ├── context/        # 场景上下文
-│   │   │   │   ├── exception/      # 异常类
-│   │   │   │   └── response/       # 响应格式
-│   │   │   ├── domain/             # 领域模型层
-│   │   │   │   ├── model/          # 实体类
-│   │   │   │   └── repository/     # 仓储接口
-│   │   │   ├── infrastructure/     # 基础设施层
-│   │   │   └── presentation/       # 表现层
-│   │   │       ├── config/         # 配置类
-│   │   │       ├── controller/     # 控制器
-│   │   │       ├── dto/            # 数据传输对象
-│   │   │       ├── exception/      # 全局异常处理
-│   │   │       └── interceptor/    # 拦截器
+│   │   │   ├── application/       # 应用服务层
+│   │   │   ├── common/            # 通用组件
+│   │   │   ├── domain/            # 领域模型层
+│   │   │   ├── infrastructure/    # 基础设施层
+│   │   │   └── presentation/      # 表现层
 │   │   └── resources/
-│   │       ├── application.yml
-│   │       ├── application-local.yml.example
-│   │       └── application-prod.yml
-│   └── test/                       # 测试代码
-├── .env.example                    # 环境变量模板
-├── .gitignore
-├── API_TEST.md                     # API 测试文档
-├── SECURITY_CONFIG.md              # 安全配置指南
-└── pom.xml
+│   │       ├── application.yml    # 应用配置
+│   │       └── db/migration/      # 数据库迁移脚本
+│   └── test/                      # 测试代码
+├── .env.example                   # 环境变量模板
+├── pom.xml                        # Maven 配置
+└── README.md                      # 本文件
 ```
 
-## 安全配置
+## 🎯 核心特性
 
-**⚠️ 重要**：数据库密码等敏感信息不应该提交到 Git！
+- **场景隔离**：多场景数据完全隔离，使用 ThreadLocal 管理场景上下文
+- **领域驱动设计**：业务规则封装在领域模型中
+- **弱耦合关系**：物品与位置松耦合，允许不完整数据
+- **审计日志**：所有关键操作自动记录
+- **属性测试**：使用 jqwik 进行基于属性的测试
 
-详细的安全配置说明请参考：[SECURITY_CONFIG.md](SECURITY_CONFIG.md)
+## 🧪 测试
 
-## 部署
+### 运行所有测试
+```bash
+export $(cat .env | xargs) && ./mvnw test
+```
 
-### Render 部署
+### 运行特定测试
+```bash
+# 数据库连接测试
+export $(cat .env | xargs) && ./mvnw test -Dtest=DatabaseConnectionTest
 
-1. 在 Render Dashboard 创建 Web Service
-2. 连接 GitHub 仓库
-3. 配置环境变量：
-   - `DATABASE_URL`
-   - `DATABASE_USERNAME`
-   - `DATABASE_PASSWORD`
-4. Render 会自动构建和部署
+# 场景管理测试
+export $(cat .env | xargs) && ./mvnw test -Dtest=SceneManagementTest
 
-详细部署说明请参考：[README-DEPLOY.md](README-DEPLOY.md)
+# 属性测试
+export $(cat .env | xargs) && ./mvnw test -Dtest=ScenePropertyTest
+```
 
-## 技术栈
+详细测试指南请参考 [属性测试指南](docs/testing/PROPERTY_TEST_GUIDE.md)
+
+## 🔒 安全注意事项
+
+⚠️ **重要**：绝不要将数据库密码提交到 Git！
+
+- 使用 `.env` 文件管理敏感配置（已在 .gitignore 中）
+- 参考 [安全配置指南](docs/security/SECURITY_CONFIG.md) 了解最佳实践
+- 如果不慎泄露密码，立即参考安全文档中的清理脚本
+
+## 🚢 部署
+
+项目使用 Render 免费层 + Supabase 免费层部署。
+
+详细部署步骤请参考 [部署指南](docs/deployment/README-DEPLOY.md)
+
+## 📖 API 文档
+
+### 场景管理 API
+
+```
+POST   /api/scenes              创建场景
+GET    /api/scenes              查询场景列表
+GET    /api/scenes/{id}         获取场景详情
+```
+
+### 统一请求头
+
+所有 API 请求必须携带：
+```
+X-Scene-Id: {sceneId}
+```
+
+更多 API 示例请参考 [API 测试指南](docs/development/API_TEST.md)
+
+## 🛠️ 技术栈
 
 - **框架**：Spring Boot 4.0.1
+- **持久化**：Spring Data JPA + Hibernate
 - **数据库**：PostgreSQL (Supabase)
-- **ORM**：Spring Data JPA + Hibernate
-- **构建工具**：Maven
-- **Java 版本**：17
+- **语言**：Java 17
+- **工具**：Lombok、Bean Validation
+- **测试**：JUnit 5、jqwik (属性测试)
+- **部署**：Render
 
-## 开发指南
+## 📝 开发规范
 
-### 代码约束
+请严格遵循 [代码约束](docs/CODE_CONSTRAINTS_ZH.md) 中的规范：
 
-项目严格遵循代码约束规范，详见：`docs/CODE_CONSTRAINTS_ZH.md`
+- 使用领域驱动设计（DDD）
+- 严格的分层架构
+- 禁止贫血模型
+- Repository 自动注入 scene_id
 
-### 分层架构
-
-- **表现层**：Controller、DTO、拦截器
-- **应用服务层**：业务流程编排、事务管理
-- **领域模型层**：实体类、业务规则
-- **基础设施层**：Repository、数据访问
-
-### 场景隔离
-
-系统使用场景（Scene）实现数据隔离：
-- 所有业务 API 需要携带 `X-Scene-Id` Header
-- 场景管理 API 不需要 Header
-- 使用 ThreadLocal 管理场景上下文
-
-## 常见问题
-
-### 1. 数据库连接失败
-
-检查：
-- 数据库连接信息是否正确
-- 环境变量是否正确设置
-- 网络是否可以访问 Supabase
-
-### 2. 环境变量未生效
-
-确保：
-- 已正确设置环境变量
-- 使用 `export` 命令（macOS/Linux）
-- 或在 IDE 中配置环境变量
-
-### 3. 测试失败
-
-确保：
-- 数据库连接正常
-- 环境变量已设置
-- 使用 `@Transactional` 注解的测试会自动回滚
-
-## 贡献
+## 🤝 贡献
 
 欢迎提交 Issue 和 Pull Request！
 
-## 许可证
+## 📄 许可证
 
 MIT License
+
+## 📧 联系方式
+
+- GitHub: [@QianTina](https://github.com/QianTina)
+- 项目地址: https://github.com/QianTina/item-center-manage
