@@ -31,6 +31,14 @@ public class SceneService {
      */
     @Transactional
     public SceneDTO createScene(CreateSceneRequest request) {
+        // 验证必填字段
+        if (request.getName() == null || request.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("场景名称不能为空");
+        }
+        if (request.getOwner() == null || request.getOwner().trim().isEmpty()) {
+            throw new IllegalArgumentException("所有者不能为空");
+        }
+        
         // 创建场景实体
         Scene scene = new Scene(request.getName(), request.getOwner());
         
