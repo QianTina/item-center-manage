@@ -86,6 +86,47 @@ public class ItemServiceTest {
     }
     
     /**
+     * 测试创建物品失败 - 缺少名称
+     * 
+     * 验证需求：3.2
+     */
+    @Test
+    void testCreateItem_MissingName_ShouldFail() {
+        // 尝试创建物品但不提供名称
+        assertThrows(IllegalArgumentException.class, () -> {
+            itemService.createItem(null, "描述", null, null, 1);
+        }, "缺少名称应该抛出 IllegalArgumentException");
+        
+        // 尝试创建物品但提供空名称
+        assertThrows(IllegalArgumentException.class, () -> {
+            itemService.createItem("", "描述", null, null, 1);
+        }, "空名称应该抛出 IllegalArgumentException");
+        
+        // 尝试创建物品但提供空白名称
+        assertThrows(IllegalArgumentException.class, () -> {
+            itemService.createItem("   ", "描述", null, null, 1);
+        }, "空白名称应该抛出 IllegalArgumentException");
+    }
+    
+    /**
+     * 测试创建物品成功 - 位置为 null
+     * 
+     * 验证需求：3.3（物品允许没有位置）
+     */
+    @Test
+    void testCreateItem_WithNullLocation_ShouldSucceed() {
+        // 创建物品，位置为 null
+        Item item = itemService.createItem("无位置物品", "这个物品没有位置", null, null, 1);
+        
+        // 验证
+        assertNotNull(item.getId(), "物品应该创建成功");
+        assertEquals("无位置物品", item.getName());
+        assertNull(item.getLocationId(), "位置 ID 应该为 null");
+        assertEquals(ItemStatus.AVAILABLE, item.getStatus());
+        assertEquals(1L, item.getSceneId());
+    }
+    
+    /**
      * 测试查询物品
      */
     @Test
